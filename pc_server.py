@@ -32,7 +32,7 @@ def handle_connection(client, address):
 
 def receive_phone_connection():
     print(HOST)
-    while True:
+    while SERVER_ON:
         print("Waiting for the connection : ")
         print('Control Head before connection')
         client, address = SERVER.accept()
