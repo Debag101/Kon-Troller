@@ -8,16 +8,6 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((HOST, PORT))
 
 
-
-def find_hostip():
-    temp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    temp_sock.connect(('8.8.8.8', 80))
-    ip = temp_sock.getsockname()[0]
-
-    temp_sock.close()
-    return ip
-
-
 def accept_connection():
     while True:
         data, ret_address = sock.recvfrom(1024)
