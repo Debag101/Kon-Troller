@@ -1,46 +1,32 @@
-import os
 import socket
 import threading
 
-FORMAT = "utf-8"
+HOST = '0.0.0.0'
 PORT = 6741
-HOST = socket.gethostbyname(socket.gethostname())
-SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-SERVER.bind((HOST, PORT))
-SERVER.listen(1)
-SERVER_ON = True
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.bind((HOST, PORT))
 
-def handle_connection(client, address):
-    print(f"Received connection from {str(address)} on port {PORT} ")
-    client.send("200".encode(FORMAT))
 
+
+def find_hostip():
+    temp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    temp_sock.connect(('8.8.8.8', 80))
+    ip = temp_sock.getsockname()[0]
+
+    temp_sock.close()
+    return ip
+
+
+def accept_connection():
     while True:
-        try:
-            data = client.recv(1024).decode(FORMAT)
-            if data == "-q":
-                client.send("404".encode(FORMAT))
-                client.close()
-                break
-            else:
-                print(data)
+        data, ret_address = sock.recvfrom(1024)
+        data = data.decode('utf-8')
 
-        except Exception as err:
-            print(f"Error | {err}")
-            client.close()
-
-
-def receive_phone_connection():
-    print(HOST)
-    while SERVER_ON:
-        print("Waiting for the connection : ")
-        print('Control Head before connection')
-        client, address = SERVER.accept()
-        print('Control head after connection')
+        if data == 'controller':
+            sock.sendto(f"{socket.gethostname()}".encode('utf-8'), ret_address)
         
-        handle_connection_thread = threading.Thread(target=handle_connection, args=(client, address ))
-        handle_connection_thread.start()
 
-
-if __name__ == '__main__':
-    receive_phone_connection()
+connection_thread = threading.Thread(target=accept_connection(), args=())
+connection_thread.start()
+    
