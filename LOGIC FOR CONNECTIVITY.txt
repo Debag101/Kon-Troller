@@ -1,7 +1,0 @@
-						LOGIC FOR CONNECTIVITY
-		
-				TASK 						STATUS
-		
-		1. Look for all connections on the same wifi - 			DONE
-		2. Establish which one is the pc server				DONE
-		3. Connect to it						DONE
